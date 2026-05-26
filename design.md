@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: FitRole-design-system
-description: A mobile-first job matching interface adapted from the Cal.com DESIGN.md structure. FitRole uses a white canvas, black primary CTAs, Cal Sans-style display typography, light-gray product cards, real job-match UI fragments, and a scarce dark surface for preview/footer contexts. The core product surface is a ranked job feed with visible comparison, strong match evidence, lightweight save state, and decisive full-width Skip / Apply controls.
+description: A mobile-first job matching interface adapted from the Cal.com DESIGN.md structure. FitRole uses a white canvas, black primary CTAs, Cal Sans-style display typography, light-gray product cards, real job-match UI fragments, and a scarce dark surface for preview/footer contexts. The core product surface is a ranked job feed with visible comparison, strong match evidence, lightweight save state, and detail-sheet actions for saving and applying.
 sourceOfTruth: "/preview.html is the base visual catalog. public/design-system.css holds reusable tokens and component classes. src/styles.css adapts those choices to the phone-framed React app."
 
 colors:
@@ -26,12 +26,28 @@ colors:
   on-dark-soft: "#a1a1aa"
   brand-accent: "#3b82f6"
   success: "#10b981"
+  success-soft: "#f0fdf4"
+  success-ink: "#15803d"
+  success-border: "#bbf7d0"
   warning: "#f59e0b"
   error: "#ef4444"
+  error-soft: "#fef2f2"
+  error-ink: "#b91c1c"
+  error-border: "#fecaca"
+  info-soft: "#eef5ff"
+  info-ink: "#244c87"
   badge-orange: "#fb923c"
+  badge-orange-ink: "#c2410c"
   badge-pink: "#ec4899"
+  badge-pink-ink: "#be185d"
   badge-violet: "#8b5cf6"
+  badge-violet-ink: "#6d28d9"
   badge-emerald: "#34d399"
+  badge-emerald-ink: "#047857"
+  phone-border: "#0a0a0a"
+  dynamic-island: "#000000"
+  progress-inactive: "#e3e3de"
+  notification: "{colors.error}"
 
 typography:
   display-xl:
@@ -166,8 +182,9 @@ components:
     padding: 12px 20px
     height: 40px
   button-danger-soft:
-    backgroundColor: "#fef2f2"
-    textColor: "#b91c1c"
+    backgroundColor: "{colors.error-soft}"
+    textColor: "{colors.error-ink}"
+    borderColor: "{colors.error-border}"
     typography: "{typography.button}"
     rounded: "{rounded.md}"
     padding: 12px 20px
@@ -225,11 +242,6 @@ components:
     textColor: "{colors.ink}"
     rounded: "{rounded.md}"
     padding: 18px
-  job-card-actions:
-    layout: two-column
-    gap: 8px
-    primaryAction: "{component.button-primary}"
-    destructiveAction: "{component.button-danger-soft}"
   detail-sheet:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
@@ -292,17 +304,17 @@ components:
     rounded: "{rounded.pill}"
     padding: 4px 12px
   keyword-chip-match:
-    backgroundColor: "#f0fdf4"
-    textColor: "#15803d"
+    backgroundColor: "{colors.success-soft}"
+    textColor: "{colors.success-ink}"
     rounded: "{rounded.pill}"
     padding: 5px 9px
   keyword-chip-gap:
-    backgroundColor: "#fef2f2"
-    textColor: "#b91c1c"
+    backgroundColor: "{colors.error-soft}"
+    textColor: "{colors.error-ink}"
     rounded: "{rounded.pill}"
     padding: 5px 9px
   score-ring:
-    strokeColor: "{colors.primary}"
+    strokeColor: "semantic by score: success for excellent, brand-accent for strong, warning for possible, error for low"
     backgroundStrokeColor: "{colors.hairline-soft}"
     typography: "{typography.caption}"
   cta-band-light:
@@ -323,6 +335,8 @@ components:
 FitRole's product surface is a clean, friendly modern-SaaS mobile interface: white canvas (`{colors.canvas}` — #ffffff), black primary CTAs (`{colors.primary}` — #111111), Cal Sans-style display typography, and light-gray / white cards holding real job-match UI fragments. The system reads as confidently engineered without trying to impress. Every screen has clear hierarchy, generous whitespace, and one obvious primary action.
 
 `/preview.html` is the base design-system catalog. When the app style and catalog disagree, update the app toward the light preview first, then mirror contrast-only changes in `/preview-dark.html`. `public/design-system.css` owns shared tokens and reusable classes; `src/styles.css` should only adapt those choices to mobile app constraints.
+
+Dark app reviews should be based on `/preview-dark.html` and controlled through the `APP_THEME` constant in `src/main.jsx`. Do not add an in-app light/dark switch unless the product explicitly needs one.
 
 The core experience is not a dating-style card stack anymore. Discover is a ranked, scrollable job feed where users can compare multiple opportunities before acting. Each job card exposes the same decision grammar: tap to inspect, bookmark to save, Skip to remove with undo, Apply to track the role.
 
@@ -346,7 +360,7 @@ The dark surface (`{colors.surface-dark}` — #101010) is scarce. It belongs to 
 
 ### Brand & Accent
 
-- **Primary** (`{colors.primary}` — #111111): The dominant action color. Used for primary CTAs, h1/h2 display type, score rings, and active selected controls.
+- **Primary** (`{colors.primary}` — #111111): The dominant action color. Used for primary CTAs, h1/h2 display type, and active selected controls. Score visuals use semantic theme tokens instead of primary black when they need faster scanning.
 - **Primary Active** (`{colors.primary-active}` — #242424): Pressed/active state for primary controls.
 - **Primary Disabled** (`{colors.primary-disabled}` — #e5e7eb): Disabled primary control background.
 - **Brand Accent** (`{colors.brand-accent}` — #3b82f6): Used sparingly on informational strips or links. It should not become the action color.
@@ -377,7 +391,9 @@ The dark surface (`{colors.surface-dark}` — #101010) is scarce. It belongs to 
 
 - **Success** (`{colors.success}` — #10b981): Matched keywords, positive confirmation, profile strength.
 - **Warning** (`{colors.warning}` — #f59e0b): Save-related accent or warning states.
-- **Error** (`{colors.error}` — #ef4444): Destructive/error tone. In the feed, Skip uses a soft red treatment rather than solid red.
+- **Error** (`{colors.error}` — #ef4444): Destructive/error tone for validation and explicit destructive states. Discover Skip now uses the secondary button treatment rather than red.
+- **Semantic Soft Variants** (`{colors.success-soft}`, `{colors.success-ink}`, `{colors.success-border}`, `{colors.error-soft}`, `{colors.error-ink}`, `{colors.error-border}`, `{colors.info-soft}`, `{colors.info-ink}`): Soft backgrounds, readable ink, and border tones for chips, confirmation buttons, warnings, and informational strips. App CSS should reference these aliases rather than hardcoding local tints.
+- **App Chrome Tokens** (`{colors.phone-border}`, `{colors.dynamic-island}`, `{colors.progress-inactive}`, `{colors.notification}`): Phone-frame chrome, onboarding progress tracks, and bottom-nav badges. These are product-shell variants owned by `public/design-system.css`, not one-off app colors.
 
 ## Typography
 
@@ -425,7 +441,6 @@ If Cal Sans is unavailable, Manrope 600/700 or Inter 600 with negative tracking 
 - **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 96px.
 - **Mobile screen padding:** 15-18px horizontal padding.
 - **Card internal padding:** 18px for mobile job cards; 24px for larger product cards; 32px for marketing cards.
-- **Decision row gap:** 8px between equal-width Skip and Apply buttons.
 - **Feed gap:** 10px between cards.
 
 ### Grid & Container
@@ -496,7 +511,7 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 
 **`button-secondary`** — White button with hairline outline and ink text. Used for Back, Save, and secondary sheet actions.
 
-**`button-danger-soft`** — Soft red destructive action. Used for Skip in the Discover card. Background stays light; the product should not make skipping feel as visually dominant as applying.
+**`button-danger-soft`** — Soft red destructive action for explicit destructive or error-adjacent moments. Skip does not use this treatment in the current Discover card.
 
 **`button-icon-circular`** — Circular icon-only action. Used for bookmark/save and settings. 34-40px in the current app, with hairline border.
 
@@ -504,9 +519,7 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 
 ### Cards & Containers
 
-**`job-card`** — The primary Discover unit. White surface, hairline border, 8px radius, subtle separation. Contains company logo, title/company, match score, metadata row, matched/missing keyword chips, status badges, and full-width two-column Skip / Apply buttons. Tapping any non-control area opens the detail sheet.
-
-**`job-card-actions`** — Two equal-width buttons at the bottom of a job card. Left: Skip (`{component.button-danger-soft}`). Right: Apply (`{component.button-primary}`). Apply remains visually dominant.
+**`job-card`** — The primary Discover unit. White surface, hairline border, 8px radius, subtle separation. Contains company logo, title/company, match score, metadata row, and matched/missing keyword chips. Tapping any non-control area opens the detail sheet.
 
 **`detail-sheet`** — Full-screen overlay inside `.app-screen`. Header and action footer are fixed. Body scrolls without visible scrollbars. It contains hero job info, why-match explanation, score breakdown, keyword chips, responsibilities, requirements, and benefits.
 
@@ -538,7 +551,7 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 
 ### Product-Specific UI
 
-**`score-ring`** — Circular match score. Current stroke is black for brand consistency. Semantic color may be introduced later only if it improves scan speed without making the feed noisy.
+**`score-ring`** — Circular match score. Uses existing semantic theme tokens for faster scanning: excellent = `{colors.success}`, strong = `{colors.brand-accent}`, possible = `{colors.warning}`, low = `{colors.error}`. Soft score backgrounds are generated from those tokens, not added as new palette colors. The color appears only on the score stroke/text and matching breakdown bars, not on primary actions.
 
 **`insight-strip`** — Soft informational strip inside Discover. Blue is acceptable here because it is informational, not an action layer.
 
@@ -554,12 +567,12 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 
 ### Do
 
-- Reserve `{colors.primary}` for primary CTAs, display text, active controls, and score-ring emphasis.
+- Reserve `{colors.primary}` for primary CTAs, display text, and active controls. Use score-ring semantic tones only for score comprehension.
 - Use display font semantics for every display headline. Pair with Inter body.
 - Apply negative letter-spacing on display sizes.
 - Use `{component.job-card}` as the central Discover primitive.
 - Keep Discover as a ranked list, not a stacked deck.
-- Use full-width two-column Skip / Apply buttons in job cards.
+- Keep feed cards focused on comparison; place save/apply decisions in lightweight controls or the detail sheet.
 - Keep Save as a lightweight bookmark action, not a primary CTA.
 - Use real product UI fragments inside cards and previews.
 - Hide scrollbars inside the phone frame while preserving scroll behavior.
@@ -569,8 +582,7 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 ### Don't
 
 - Don't use blue primary CTAs.
-- Don't make Skip a solid red primary-weight button.
-- Don't make both Skip and Apply equally dark. Apply is the primary decision.
+- Don't overload feed cards with repeated bottom action bars.
 - Don't return Discover to a stacked/swipe-only deck.
 - Don't show desktop scrollbars inside the phone.
 - Don't let detail sheets escape the phone frame.
@@ -593,7 +605,6 @@ Company logos use rounded-square geometry at 8px. Score rings and bookmark icon 
 ### Touch Targets
 
 - `{component.button-primary}` at minimum 40 x 40px.
-- Discover card Skip / Apply buttons are 44px minimum height.
 - Icon-only bookmark/settings controls should be at least 34px visible size, with sufficient surrounding tap space.
 - `{component.text-input}` height is 40px.
 - Bottom nav items use the full nav cell as tap target.

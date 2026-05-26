@@ -1,20 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700&family=JetBrains+Mono:wght@400&display=swap');
 
 :root {
-  --fr-font-display: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --fr-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --fr-font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --fr-font-display:
+    'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --fr-font-body:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fr-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   --fr-color-primary: #111111;
   --fr-color-primary-active: #242424;
   --fr-color-brand-accent: #3b82f6;
   --fr-color-badge-orange: #fb923c;
+  --fr-color-badge-orange-ink: #c2410c;
   --fr-color-badge-pink: #ec4899;
+  --fr-color-badge-pink-ink: #be185d;
   --fr-color-badge-violet: #8b5cf6;
+  --fr-color-badge-violet-ink: #6d28d9;
   --fr-color-badge-emerald: #34d399;
+  --fr-color-badge-emerald-ink: #047857;
 
   --fr-color-canvas: #ffffff;
-  --fr-color-app-shell: #e9e7de;
+  --fr-color-app-shell: #ffffff;
   --fr-color-surface-soft: #f8f9fa;
   --fr-color-surface-card: #f5f5f5;
   --fr-color-surface-strong: #e5e7eb;
@@ -36,10 +42,32 @@
   --fr-color-error: #ef4444;
   --fr-color-success-soft: #f0fdf4;
   --fr-color-success-ink: #15803d;
+  --fr-color-success-border: #bbf7d0;
   --fr-color-error-soft: #fef2f2;
   --fr-color-error-ink: #b91c1c;
+  --fr-color-error-border: #fecaca;
   --fr-color-info-soft: #eef5ff;
   --fr-color-info-ink: #244c87;
+
+  --fr-color-phone-border: #0a0a0a;
+  --fr-color-dynamic-island: #000000;
+  --fr-color-progress-inactive: #e3e3de;
+  --fr-color-notification: var(--fr-color-error);
+  --fr-color-dark-card-border: color-mix(
+    in srgb,
+    var(--fr-color-on-dark) 10%,
+    transparent
+  );
+  --fr-color-control-overlay: color-mix(
+    in srgb,
+    var(--fr-color-ink) 6%,
+    transparent
+  );
+  --fr-color-logo-inset: color-mix(
+    in srgb,
+    var(--fr-color-on-dark) 18%,
+    transparent
+  );
 
   --fr-space-xxs: 4px;
   --fr-space-xs: 8px;
@@ -60,7 +88,11 @@
 
   --fr-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.05);
   --fr-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --fr-shadow-phone: 0 34px 90px rgba(17, 17, 17, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.7);
+  --fr-shadow-phone:
+    0 34px 90px rgba(17, 17, 17, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.7);
+  --fr-shadow-toast: 0 10px 30px rgba(17, 17, 17, 0.22);
+  --fr-shadow-focus: 0 0 0 3px
+    color-mix(in srgb, var(--fr-color-ink) 8%, transparent);
 }
 
 .fr-display-xl,
@@ -72,17 +104,49 @@
   color: var(--fr-color-ink);
 }
 
-.fr-display-xl { font-size: 64px; line-height: 1.05; letter-spacing: -2px; }
-.fr-display-lg { font-size: 48px; line-height: 1.1; letter-spacing: -1.5px; }
-.fr-display-md { font-size: 36px; line-height: 1.15; letter-spacing: -1px; }
-.fr-display-sm { font-size: 28px; line-height: 1.2; letter-spacing: -0.5px; }
+.fr-display-xl {
+  font-size: 64px;
+  line-height: 1.05;
+  letter-spacing: -2px;
+}
+.fr-display-lg {
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+}
+.fr-display-md {
+  font-size: 36px;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+.fr-display-sm {
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
 
-.fr-title-lg { font: 600 22px/1.3 var(--fr-font-body); letter-spacing: -0.3px; }
-.fr-title-md { font: 600 18px/1.4 var(--fr-font-body); }
-.fr-title-sm { font: 600 16px/1.4 var(--fr-font-body); }
-.fr-body-md { font: 400 16px/1.5 var(--fr-font-body); color: var(--fr-color-body); }
-.fr-body-sm { font: 400 14px/1.5 var(--fr-font-body); color: var(--fr-color-body); }
-.fr-caption { font: 500 13px/1.4 var(--fr-font-body); color: var(--fr-color-muted); }
+.fr-title-lg {
+  font: 600 22px/1.3 var(--fr-font-body);
+  letter-spacing: -0.3px;
+}
+.fr-title-md {
+  font: 600 18px/1.4 var(--fr-font-body);
+}
+.fr-title-sm {
+  font: 600 16px/1.4 var(--fr-font-body);
+}
+.fr-body-md {
+  font: 400 16px/1.5 var(--fr-font-body);
+  color: var(--fr-color-body);
+}
+.fr-body-sm {
+  font: 400 14px/1.5 var(--fr-font-body);
+  color: var(--fr-color-body);
+}
+.fr-caption {
+  font: 500 13px/1.4 var(--fr-font-body);
+  color: var(--fr-color-muted);
+}
 
 .fr-button-primary,
 .fr-button-secondary,
@@ -125,13 +189,13 @@
 }
 
 .fr-button-danger-soft {
-  border: 1px solid #fecaca;
+  border: 1px solid var(--fr-color-error-border);
   background: var(--fr-color-error-soft);
   color: var(--fr-color-error-ink);
 }
 
 .fr-button-success-soft {
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--fr-color-success-border);
   background: var(--fr-color-success-soft);
   color: var(--fr-color-success-ink);
 }
@@ -200,7 +264,7 @@
 .fr-pricing-tier-card-featured {
   background: var(--fr-color-surface-dark);
   color: var(--fr-color-on-dark);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--fr-color-dark-card-border);
 }
 
 .fr-pill-group {
@@ -260,10 +324,22 @@
   font: 600 13px/1.4 var(--fr-font-body);
 }
 
-.fr-badge-orange { background: rgba(251, 146, 60, 0.16); color: #c2410c; }
-.fr-badge-pink { background: rgba(236, 72, 153, 0.16); color: #be185d; }
-.fr-badge-violet { background: rgba(139, 92, 246, 0.16); color: #6d28d9; }
-.fr-badge-emerald { background: rgba(52, 211, 153, 0.18); color: #047857; }
+.fr-badge-orange {
+  background: color-mix(in srgb, var(--fr-color-badge-orange) 16%, transparent);
+  color: var(--fr-color-badge-orange-ink);
+}
+.fr-badge-pink {
+  background: color-mix(in srgb, var(--fr-color-badge-pink) 16%, transparent);
+  color: var(--fr-color-badge-pink-ink);
+}
+.fr-badge-violet {
+  background: color-mix(in srgb, var(--fr-color-badge-violet) 16%, transparent);
+  color: var(--fr-color-badge-violet-ink);
+}
+.fr-badge-emerald {
+  background: color-mix(in srgb, var(--fr-color-badge-emerald) 18%, transparent);
+  color: var(--fr-color-badge-emerald-ink);
+}
 
 .fr-avatar-circle {
   width: 36px;
@@ -296,7 +372,7 @@
 .fr-input:focus,
 .fr-input-focused {
   border-color: var(--fr-color-ink);
-  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+  box-shadow: var(--fr-shadow-focus);
   outline: none;
 }
 

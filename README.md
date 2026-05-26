@@ -5,6 +5,7 @@ FitRole is a mobile-first React prototype for AI-assisted job matching. It prese
 ## Mobile UI Rules
 
 - Treat `/preview.html` as the base design-system catalog. App styling should use the same tokens, component states, and interaction grammar unless a mobile constraint requires a narrower variant.
+- Keep reusable color decisions in `public/design-system.css`; `src/styles.css` should consume token aliases for semantic states, phone chrome, progress tracks, notifications, and shared component variants.
 - The phone frame is the app boundary; overlays and sheets should stay inside `.phone` / `.app-screen`.
 - Scrollable mobile surfaces should support touch or wheel scrolling without visible desktop scrollbars.
 - Bottom navigation and sheet actions should remain fixed while the main content area scrolls.
@@ -17,6 +18,7 @@ FitRole is a mobile-first React prototype for AI-assisted job matching. It prese
 - `/preview.html` shows the light design-system catalog.
 - `/preview-dark.html` shows the dark-surface catalog.
 - `src/styles.css` imports the shared design-system layer and adapts it to the phone-framed app.
+- App theme review is controlled by the `APP_THEME` constant in `src/main.jsx`; keep it as a code-level switch, not an in-app light/dark toggle.
 
 ## Scripts
 
