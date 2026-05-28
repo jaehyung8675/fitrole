@@ -165,7 +165,7 @@ button {
 }
 
 .dynamic-island {
-  width: 98px;
+  width: 120px;
   height: 30px;
   border-radius: var(--fr-rounded-pill);
   background: var(--fr-color-dynamic-island);
@@ -175,7 +175,7 @@ button {
   justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   color: var(--fr-color-ink);
 }
 
@@ -389,7 +389,19 @@ strong {
 }
 
 .onboarding-screen {
-  padding: 18px;
+  padding: 0;
+}
+
+.onboarding-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px 18px 96px;
+  scrollbar-width: none;
+}
+
+.onboarding-content::-webkit-scrollbar {
+  display: none;
 }
 
 .progress-row {
@@ -459,7 +471,7 @@ strong {
 
 .upload-box {
   height: 210px;
-  border: 1px dashed var(--fr-color-hairline);
+  border: 2px dashed var(--fr-color-hairline);
   border-radius: var(--fr-rounded-md);
   background: var(--fr-color-canvas);
   display: grid;
@@ -493,6 +505,23 @@ strong {
   padding: 0;
 }
 
+.preference-sections {
+  display: grid;
+  gap: var(--fr-space-md);
+}
+
+.preference-section {
+  display: grid;
+  gap: var(--fr-space-xs);
+}
+
+.preference-section h2 {
+  color: var(--fr-color-muted);
+  font: 600 12px/1.4 var(--fr-font-body);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
 .preference-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -505,9 +534,13 @@ strong {
   background: var(--fr-color-canvas);
   color: var(--fr-color-muted);
   border-radius: var(--fr-rounded-md);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fr-space-xs);
   font-weight: 600;
+  font-size: 14px;
+  padding: 0 14px;
 }
 
 .preference-grid button.active {
@@ -518,16 +551,22 @@ strong {
 
 .onboarding-actions,
 .detail-actions {
-  margin-top: auto;
   display: flex;
   gap: 10px;
   flex-shrink: 0;
 }
 
+.onboarding-actions {
+  margin-top: 0;
+  padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--fr-color-hairline-soft);
+  background: var(--fr-color-canvas);
+}
+
 .content {
   flex: 1;
   overflow: auto;
-  padding: 16px 15px 92px;
+  padding: 0 15px 92px;
   scrollbar-width: none;
 }
 
@@ -536,11 +575,17 @@ strong {
 }
 
 .screen-heading {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin: 0 -15px 14px;
+  padding: 0 15px 12px;
+  border-bottom: 1px solid var(--fr-color-hairline-soft);
+  background: var(--fr-color-canvas);
 }
 
 .screen-heading h2 {
@@ -565,15 +610,47 @@ strong {
   place-items: center;
 }
 
+.icon-button.active {
+  border-color: var(--fr-color-ink);
+}
+
+.filter-control {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.filter-popover {
+  position: absolute;
+  top: calc(100% + var(--fr-space-xs));
+  right: 0;
+  z-index: 12;
+  width: 214px;
+  padding: var(--fr-space-xs);
+}
+
+.filter-popover > span {
+  display: block;
+  padding: 4px 8px 8px;
+  color: var(--fr-color-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .feed-controls {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
   gap: 6px;
   overflow-x: auto;
-  margin: 14px 0 12px;
+  margin: 0;
   padding: 6px;
   border-radius: var(--fr-rounded-pill);
   background: var(--fr-color-surface-soft);
+}
+
+.filter-popover .feed-controls {
+  display: grid;
+  width: 100%;
+  border-radius: var(--fr-rounded-lg);
 }
 
 .feed-controls button {
@@ -588,15 +665,96 @@ strong {
   white-space: nowrap;
 }
 
+.filter-popover .feed-controls button {
+  justify-content: flex-start;
+  width: 100%;
+}
+
 .feed-controls button.active {
   background: var(--fr-color-canvas);
   color: var(--fr-color-ink);
   box-shadow: var(--fr-shadow-soft);
 }
 
+.discover {
+  display: flex;
+  flex-direction: column;
+}
+
+.discover-progress {
+  margin-bottom: var(--fr-space-xs);
+}
+
+.discover-progress span {
+  height: 5px;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--fr-rounded-pill);
+  background: var(--fr-color-hairline-soft);
+}
+
+.discover-progress i {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: var(--fr-color-ink);
+  transition:
+    transform 220ms ease,
+    width 220ms ease;
+}
+
 .job-feed {
   display: grid;
   gap: 10px;
+}
+
+.carousel-feed {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.job-carousel {
+  --job-card-peek: 42px;
+  --job-card-gap: 10px;
+  --job-card-width: calc(100% - var(--job-card-peek));
+  --job-card-step: calc(var(--job-card-width) + var(--job-card-gap));
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.job-track {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  gap: var(--job-card-gap);
+  transition: transform 260ms ease;
+  will-change: transform;
+}
+
+.job-track .job-card {
+  flex: 0 0 var(--job-card-width);
+}
+
+.done-card {
+  min-height: 100%;
+  padding: var(--fr-space-xl);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--fr-space-md);
+  text-align: center;
+}
+
+.done-card strong {
+  font-size: 22px;
+}
+
+.done-card p {
+  color: var(--fr-color-muted);
+  line-height: 1.5;
 }
 
 .job-card,
@@ -617,16 +775,32 @@ strong {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  touch-action: pan-y;
 }
 
 .job-card.feed-card {
-  height: auto;
-  min-height: 230px;
+  min-height: 100%;
   cursor: pointer;
+}
+
+.job-card.previewing {
+  opacity: 0.72;
 }
 
 .job-card.compact {
   height: auto;
+}
+
+.card-decision-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--fr-space-xs);
+  margin-top: auto;
+  padding-top: var(--fr-space-sm);
+}
+
+.card-decision-actions button {
+  border-radius: var(--fr-rounded-pill);
 }
 
 .job-card-header {
@@ -843,6 +1017,7 @@ strong {
   align-items: flex-start;
   gap: 9px;
   padding: 12px;
+  margin-bottom: var(--fr-space-xs);
   border-radius: var(--fr-rounded-md);
   background: var(--fr-color-info-soft);
   color: var(--fr-color-info-ink);
@@ -1050,7 +1225,7 @@ strong {
 }
 
 .list-content {
-  padding-top: 16px;
+  padding-top: 0;
 }
 
 .list-stack {
@@ -1280,7 +1455,7 @@ strong {
   top: -7px;
   left: 18%;
   right: 18%;
-  height: 3px;
+  height: 2px;
   border-radius: var(--fr-rounded-pill);
   background: transparent;
 }

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
@@ -313,6 +319,25 @@ const profile = {
   },
 };
 
+const preferenceGroups = [
+  {
+    title: 'Work setting',
+    items: ['Remote', 'Hybrid', 'On-site'],
+  },
+  {
+    title: 'Level',
+    items: ['Mid-level', 'Senior', 'Lead'],
+  },
+  {
+    title: 'Employment',
+    items: ['Full-time', 'Contract', 'Freelance'],
+  },
+  {
+    title: 'Compensation',
+    items: ['$100k+', '$150k+', 'Equity'],
+  },
+];
+
 const AppContext = createContext(null);
 const APP_THEME = 'light';
 
@@ -323,7 +348,11 @@ function AppProvider({ children }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const [screen, setScreen] = useState('discover');
   const [toast, setToast] = useState(null);
-  const discoverJobs = jobs.filter((job) => !skippedJobIds.includes(job.id));
+  const discoverJobs = jobs.filter(
+    (job) =>
+      !skippedJobIds.includes(job.id) &&
+      !savedJobs.some((savedJob) => savedJob.id === job.id),
+  );
 
   const saveJob = (job) =>
     setSavedJobs((prev) =>
@@ -466,100 +495,103 @@ function OnboardingScreen({ onDone }) {
 
   return (
     <section className='screen onboarding-screen'>
-      <div className='progress-row'>
-        {steps.map((item, index) => (
-          <span className={index <= step ? 'active' : ''} key={item} />
-        ))}
+      <div className='onboarding-content'>
+        <div className='progress-row'>
+          {steps.map((item, index) => (
+            <span className={index <= step ? 'active' : ''} key={item} />
+          ))}
+        </div>
+        <p className='eyebrow'>
+          Step {step + 1} of {steps.length} · {steps[step]}
+        </p>
+        {step === 0 && (
+          <Panel
+            title='What kind of role are you targeting?'
+            subtitle='This tunes your matches before resume parsing kicks in.'
+          >
+            <div className='choice-list'>
+              {[
+                'Product Design',
+                'UX Research',
+                'Design Systems',
+                'UI Engineering',
+              ].map((item) => (
+                <button
+                  className={
+                    goal === item
+                      ? 'choice active fr-button-secondary'
+                      : 'choice fr-button-secondary'
+                  }
+                  onClick={() => setGoal(item)}
+                  key={item}
+                >
+                  {item}
+                  {goal === item && <MIcon name="check" size={16} />}
+                </button>
+              ))}
+            </div>
+          </Panel>
+        )}
+        {step === 1 && (
+          <Panel
+            title='Upload your resume'
+            subtitle="For now this prototype simulates extraction with Maya's profile."
+          >
+            <div className='upload-box fr-card'>
+              <MIcon name="upload" size={30} />
+              <strong>Drop your resume here</strong>
+              <span>PDF or Word · max 5MB</span>
+            </div>
+            <div className='manual-entry-row'>
+              <span>or</span>
+              <button type='button'>enter detail manually</button>
+            </div>
+          </Panel>
+        )}
+        {step === 2 && (
+          <Panel
+            title='Review your keywords'
+            subtitle='Remove weak signals later from your profile tab.'
+          >
+            <ChipCloud
+              items={[
+                ...profile.keywords.skills,
+                ...profile.keywords.tools.slice(0, 4),
+              ]}
+              type='match'
+            />
+          </Panel>
+        )}
+        {step === 3 && (
+          <Panel
+            title='Set preferences'
+            subtitle='These can be expanded into real filters next.'
+          >
+            <div className='preference-sections'>
+              {preferenceGroups.map((group) => (
+                <section className='preference-section' key={group.title}>
+                  <h2>{group.title}</h2>
+                  <div className='preference-grid'>
+                    {group.items.map((item) => (
+                      <button
+                        className={preferences.includes(item) ? 'active' : ''}
+                        onClick={() => togglePreference(item)}
+                        type='button'
+                        key={item}
+                      >
+                        {item}
+                        {preferences.includes(item) && (
+                          <MIcon name="check" size={16} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </Panel>
+        )}
       </div>
-      <p className='eyebrow'>
-        Step {step + 1} of {steps.length} · {steps[step]}
-      </p>
-      {step === 0 && (
-        <Panel
-          title='What kind of role are you targeting?'
-          subtitle='This tunes your matches before resume parsing kicks in.'
-        >
-          <div className='choice-list'>
-            {[
-              'Product Design',
-              'UX Research',
-              'Design Systems',
-              'UI Engineering',
-            ].map((item) => (
-              <button
-                className={
-                  goal === item
-                    ? 'choice active fr-button-secondary'
-                    : 'choice fr-button-secondary'
-                }
-                onClick={() => setGoal(item)}
-                key={item}
-              >
-                {item}
-                {goal === item && <MIcon name="check" size={16} />}
-              </button>
-            ))}
-          </div>
-        </Panel>
-      )}
-      {step === 1 && (
-        <Panel
-          title='Upload your resume'
-          subtitle="For now this prototype simulates extraction with Maya's profile."
-        >
-          <div className='upload-box fr-card'>
-            <MIcon name="upload" size={30} />
-            <strong>Drop your resume here</strong>
-            <span>PDF or Word · max 5MB</span>
-          </div>
-          <div className='manual-entry-row'>
-            <span>or</span>
-            <button type='button'>enter detail manually</button>
-          </div>
-        </Panel>
-      )}
-      {step === 2 && (
-        <Panel
-          title='Review your keywords'
-          subtitle='Remove weak signals later from your profile tab.'
-        >
-          <ChipCloud
-            items={[
-              ...profile.keywords.skills,
-              ...profile.keywords.tools.slice(0, 4),
-            ]}
-            type='match'
-          />
-        </Panel>
-      )}
-      {step === 3 && (
-        <Panel
-          title='Set preferences'
-          subtitle='These can be expanded into real filters next.'
-        >
-          <div className='preference-grid'>
-            {[
-              'Remote',
-              'Hybrid',
-              'On-site',
-              'Mid-level',
-              'Senior',
-              'Full-time',
-              '$100k+',
-              '$150k+',
-            ].map((item) => (
-              <button
-                className={preferences.includes(item) ? 'active' : ''}
-                onClick={() => togglePreference(item)}
-                type='button'
-                key={item}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </Panel>
-      )}
       <footer className='onboarding-actions'>
         {step > 0 && (
           <button
@@ -604,22 +636,99 @@ function MobileExperience() {
 }
 
 function DiscoverScreen() {
-  const { applications, discoverJobs, setSelectedJob, skipJob, applyJob } =
+  const { discoverJobs, setScreen, setSelectedJob, skipJob, saveJob } =
     useFitRole();
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [feedFilter, setFeedFilter] = useState('Best match');
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [dragStart, setDragStart] = useState(null);
+  const feedFilters = ['Best match', 'Recent', 'Remote'];
+  const visibleJobs = useMemo(() => {
+    if (feedFilter === 'Recent') {
+      return [...discoverJobs].sort((a, b) => a.postedDays - b.postedDays);
+    }
+    if (feedFilter === 'Remote') {
+      return discoverJobs.filter((job) => job.workType === 'Remote');
+    }
+    return discoverJobs;
+  }, [discoverJobs, feedFilter]);
+
+  useEffect(() => {
+    setActiveIndex((index) =>
+      Math.min(index, Math.max(visibleJobs.length - 1, 0)),
+    );
+  }, [visibleJobs.length]);
+
+  const chooseFilter = (item) => {
+    setFeedFilter(item);
+    setActiveIndex(0);
+    setFilterOpen(false);
+  };
+  const activeJob = visibleJobs[activeIndex];
+
+  const saveActiveJob = (job) => {
+    saveJob(job);
+  };
+
+  const skipActiveJob = (job) => {
+    skipJob(job);
+  };
+
+  const finishCardDrag = (clientX, clientY) => {
+    if (!activeJob || !dragStart) return;
+    const deltaX = dragStart.x - clientX;
+    const deltaY = dragStart.y - clientY;
+
+    if (deltaY > 52 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      setSelectedJob(activeJob);
+    } else if (deltaX > 48) {
+      setActiveIndex((index) => Math.min(index + 1, visibleJobs.length - 1));
+    } else if (deltaX < -48) {
+      setActiveIndex((index) => Math.max(index - 1, 0));
+    }
+    setDragStart(null);
+  };
 
   return (
     <div className='content discover'>
       <div className='screen-heading'>
         <div>
           <h2>Discover</h2>
-          <p>{discoverJobs.length} ranked role matches</p>
         </div>
-        <button
-          className='icon-button fr-button-icon-circular'
-          aria-label='Discovery settings'
-        >
-          <MIcon name="tune" size={19} />
-        </button>
+        <div className='filter-control'>
+          <button
+            className={
+              filterOpen
+                ? 'icon-button active fr-button-icon-circular'
+                : 'icon-button fr-button-icon-circular'
+            }
+            aria-label='Filter Discover roles'
+            aria-expanded={filterOpen}
+            onClick={() => setFilterOpen((value) => !value)}
+          >
+            <MIcon name="tune" size={19} />
+          </button>
+          {filterOpen && (
+            <div className='filter-popover fr-card'>
+              <span>Show roles</span>
+              <div className='feed-controls fr-pill-group' aria-label='Sort options'>
+                {feedFilters.map((item) => (
+                  <button
+                    className={
+                      feedFilter === item
+                        ? 'active fr-pill fr-pill-active'
+                        : 'fr-pill'
+                    }
+                    onClick={() => chooseFilter(item)}
+                    key={item}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <section className='insight-strip'>
         <MIcon name="auto_awesome" size={18} />
@@ -628,29 +737,59 @@ function DiscoverScreen() {
           tooling.
         </span>
       </section>
-      <div className='feed-controls fr-pill-group' aria-label='Sort options'>
-        <button className='active fr-pill fr-pill-active'>Best match</button>
-        <button className='fr-pill'>Recent</button>
-        <button className='fr-pill'>Remote</button>
-      </div>
-      <div className='job-feed'>
-        {discoverJobs.length === 0 ? (
-          <EmptyState
-            icon={<MIcon name="handshake" size={36} />}
-            title='No roles left in Discover'
-            body='Saved jobs and applications are still available in their tabs.'
+      <div className='discover-progress' aria-label='Discover progress'>
+        <span>
+          <i
+            style={{
+              width: `${visibleJobs.length ? 100 / visibleJobs.length : 100}%`,
+              transform: `translateX(${activeIndex * 100}%)`,
+            }}
           />
+        </span>
+      </div>
+      <div className='job-feed carousel-feed'>
+        {visibleJobs.length === 0 ? (
+          <article className='done-card fr-card'>
+            <MIcon name="bookmark" size={34} />
+            <strong>Discover is clear</strong>
+            <p>
+              Your saved roles are ready for review. Head to Saved when you are
+              ready for the next step.
+            </p>
+            <button
+              className='primary-button fr-button-primary'
+              onClick={() => setScreen('saved')}
+              type='button'
+            >
+              Go to Saved
+            </button>
+          </article>
         ) : (
-          discoverJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              applied={applications.some((item) => item.id === job.id)}
-              onOpen={() => setSelectedJob(job)}
-              onApply={() => applyJob(job)}
-              onSkip={() => skipJob(job)}
-            />
-          ))
+          <div className='job-carousel' aria-live='polite'>
+            <div
+              className='job-track'
+              style={{
+                transform: `translateX(calc(${activeIndex} * -1 * var(--job-card-step)))`,
+              }}
+            >
+              {visibleJobs.map((job, index) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  active={index === activeIndex}
+                  onOpen={() => setSelectedJob(job)}
+                  onSave={() => saveActiveJob(job)}
+                  onSkip={() => skipActiveJob(job)}
+                  onPointerDown={(event) =>
+                    setDragStart({ x: event.clientX, y: event.clientY })
+                  }
+                  onPointerUp={(event) =>
+                    finishCardDrag(event.clientX, event.clientY)
+                  }
+                />
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>
@@ -948,18 +1087,28 @@ function JobCard({
   job,
   compact = false,
   applied = false,
+  active = true,
   onOpen,
+  onSave,
   onApply,
   onSkip,
+  onPointerDown,
+  onPointerUp,
 }) {
-  const interactive = Boolean(onOpen);
+  const interactive = Boolean(onOpen) && compact;
 
   return (
     <article
       className={
-        compact ? 'job-card compact fr-job-card' : 'job-card feed-card fr-job-card'
+        compact
+          ? 'job-card compact fr-job-card'
+          : active
+            ? 'job-card feed-card active fr-job-card'
+            : 'job-card feed-card previewing fr-job-card'
       }
-      onClick={onOpen}
+      onClick={interactive ? onOpen : undefined}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
       onKeyDown={(event) => {
@@ -994,6 +1143,34 @@ function JobCard({
       />
       {!compact && (
         <ChipCloud items={job.missingKeywords.slice(0, 2)} type='gap' />
+      )}
+      {!compact && (
+        <div className='card-decision-actions'>
+          <button
+            className='secondary-button fr-button-secondary'
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSkip?.();
+            }}
+            type='button'
+          >
+            <MIcon name="close" size={17} />
+            Skip
+          </button>
+          <button
+            className='primary-button fr-button-primary'
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              event.stopPropagation();
+              onSave?.();
+            }}
+            type='button'
+          >
+            <MIcon name="bookmark" size={17} />
+            Save
+          </button>
+        </div>
       )}
     </article>
   );
@@ -1094,10 +1271,15 @@ function EmptyState({ icon, title, body }) {
 }
 
 function ChipCloud({ items, type = 'neutral', onRemove }) {
+  const chipVariant = type === 'match' ? 'neutral' : type;
+
   return (
     <div className='chip-cloud'>
       {items.map((item) => (
-        <span className={`chip ${type} fr-chip fr-chip-${type}`} key={item}>
+        <span
+          className={`chip ${chipVariant} fr-chip fr-chip-${chipVariant}`}
+          key={item}
+        >
           {type === 'match' && <MIcon name="check" size={12} />}
           {type === 'gap' && <MIcon name="add" size={12} />}
           {item}

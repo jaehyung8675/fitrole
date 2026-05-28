@@ -20,6 +20,12 @@ FitRole is a mobile-first React prototype for AI-assisted job matching. It prese
 - `src/styles.css` imports the shared design-system layer and adapts it to the phone-framed app.
 - App theme review is controlled by the `APP_THEME` constant in `src/main.jsx`; keep it as a code-level switch, not an in-app light/dark toggle.
 
+## Version History
+
+- Case-study milestones are tracked in [VERSION_HISTORY.md](./VERSION_HISTORY.md).
+- Keep each milestone as a local Git tag plus a Netlify immutable deploy URL or alias.
+- Do not push or deploy a new version unless explicitly requested.
+
 ## Scripts
 
 - `npm run dev -- --port 5176`

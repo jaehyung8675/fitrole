@@ -303,9 +303,9 @@
   font: 600 12px/1.2 var(--fr-font-body);
 }
 
-.fr-chip-match {
-  color: var(--fr-color-success-ink);
-  background: var(--fr-color-success-soft);
+.fr-chip-neutral {
+  color: var(--fr-color-body);
+  background: var(--fr-color-surface-card);
 }
 
 .fr-chip-gap {
